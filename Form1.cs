@@ -140,6 +140,7 @@ namespace CryptoCalculator
             }
             catch (FormatException)
             {
+                // msg box to show errors
                 MessageBox.Show("Please enter valid numeric values.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

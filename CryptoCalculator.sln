@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35707.178 d17.12
+VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CryptoCalculator", "CryptoCalculator.csproj", "{82C2C32E-32FE-4449-BD6A-0D1A7DFB7A12}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Updater", "..\Updater\Updater.csproj", "{FC953D3D-ABAB-41FF-B34A-D2E0243633EB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{82C2C32E-32FE-4449-BD6A-0D1A7DFB7A12}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{82C2C32E-32FE-4449-BD6A-0D1A7DFB7A12}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{82C2C32E-32FE-4449-BD6A-0D1A7DFB7A12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC953D3D-ABAB-41FF-B34A-D2E0243633EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC953D3D-ABAB-41FF-B34A-D2E0243633EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC953D3D-ABAB-41FF-B34A-D2E0243633EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC953D3D-ABAB-41FF-B34A-D2E0243633EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

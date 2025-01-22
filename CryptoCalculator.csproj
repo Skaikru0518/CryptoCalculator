@@ -7,10 +7,14 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>icon.ico</ApplicationIcon>
+	<Authors>Skaikru</Authors>
     <Version>1.0.1</Version>
     <AssemblyVersion>1.0.1</AssemblyVersion>
     <FileVersion>1.0.1</FileVersion>
     <InformationalVersion>1.0.1</InformationalVersion>
+    <PackageProjectUrl>https://github.com/Skaikru0518/CryptoCalculator</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Skaikru0518/CryptoCalculator</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
