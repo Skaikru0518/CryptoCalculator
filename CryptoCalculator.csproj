@@ -8,10 +8,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>icon.ico</ApplicationIcon>
 	<Authors>Skaikru</Authors>
-    <Version>1.0.2</Version>
-    <AssemblyVersion>1.0.2</AssemblyVersion>
-    <FileVersion>1.0.2</FileVersion>
-    <InformationalVersion>1.0.2</InformationalVersion>
+    <Version>1.0.3</Version>
+    <AssemblyVersion>1.0.3</AssemblyVersion>
+    <FileVersion>1.0.3</FileVersion>
+    <InformationalVersion>1.0.3</InformationalVersion>
     <PackageProjectUrl>https://github.com/Skaikru0518/CryptoCalculator</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Skaikru0518/CryptoCalculator</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace CryptoCalculator
+namespace CryptoCalculator.Components
 {
     internal class TpSlCalculator
     {
@@ -23,8 +23,8 @@ namespace CryptoCalculator
                 decimal amountInvested = Convert.ToDecimal(_form.TxtAmountInvested.Text);
 
                 // Read TP% and SL% (nullable if empty)
-                decimal? tpPercentage = string.IsNullOrWhiteSpace(_form.TxtTPPercentage.Text) ? (decimal?)null : Convert.ToDecimal(_form.TxtTPPercentage.Text);
-                decimal? slPercentage = string.IsNullOrWhiteSpace(_form.TxtSLPercentage.Text) ? (decimal?)null : Convert.ToDecimal(_form.TxtSLPercentage.Text);
+                decimal? tpPercentage = string.IsNullOrWhiteSpace(_form.TxtTPPercentage.Text) ? null : Convert.ToDecimal(_form.TxtTPPercentage.Text);
+                decimal? slPercentage = string.IsNullOrWhiteSpace(_form.TxtSLPercentage.Text) ? null : Convert.ToDecimal(_form.TxtSLPercentage.Text);
 
                 // Calculate the number of coins bought
                 decimal coinQuantity = amountInvested / entryPrice;
@@ -44,11 +44,11 @@ namespace CryptoCalculator
                 }
 
                 // Stop Loss Calculation
-                decimal stopLossPrice = entryPrice - (entryPrice * (slPercentage.Value / 100));
+                decimal stopLossPrice = entryPrice - entryPrice * (slPercentage.Value / 100);
                 decimal stopLossLoss = (entryPrice - stopLossPrice) * coinQuantity * leverage;
 
                 // Take Profit Calculation (Using TP %)
-                decimal takeProfitPrice = entryPrice + (entryPrice * (tpPercentage.Value / 100));
+                decimal takeProfitPrice = entryPrice + entryPrice * (tpPercentage.Value / 100);
                 decimal takeProfitGain = (takeProfitPrice - entryPrice) * coinQuantity * leverage;
 
                 // Calculate total position size (effective position size with leverage)

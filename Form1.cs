@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Reflection;
+using CryptoCalculator.Components;
 using Newtonsoft.Json.Linq;
 
 namespace CryptoCalculator

@@ -1,3 +1,5 @@
+using CryptoCalculator.Components;
+
 namespace CryptoCalculator
 {
     internal static class Program

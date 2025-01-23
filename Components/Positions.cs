@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace CryptoCalculator
+namespace CryptoCalculator.Components
 {
     internal class Positions
     {
