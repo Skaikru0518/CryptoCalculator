@@ -1,9 +1,57 @@
+using System.Diagnostics;
 using System.Reflection;
+using Newtonsoft.Json.Linq;
 
 namespace CryptoCalculator
 {
     public partial class Form1 : Form
     {
+        // adding a timer and boolean to pulse the update button
+        private System.Windows.Forms.Timer pulseTimer;
+        private bool isButtonBright = true;
+
+        // adding getters and setters for the textboxes in Average Calculator
+        public TextBox FirstPosition => firstPosition;
+        public TextBox SecondPosition => secondPosition;
+        public TextBox FirstEntry => firstEntry;
+        public TextBox SecondEntry => secondEntry;
+        public TextBox NewAverage => newAverage;
+
+        // adding an instance of positions class
+        private Positions positions;
+
+
+        // adding getters and setters for the textboxes in Order Calculator
+        public TextBox TxtEntryPrice => txtEntryPrice;
+        public TextBox TxtLeverage => txtLeverage;
+        public TextBox TxtRR => txtRR;
+        public TextBox TxtAmountInvested => txtAmountInvested;
+        public TextBox TxtTPPercentage => txtTPPercentage;
+        public TextBox TxtSLPercentage => txtSLPercentage;
+
+        public TextBox LblCoinAmount => lblCoinAmount;
+        public TextBox LblPositionSize => lblPositionSize;
+        public TextBox LblSLPrice => lblSLPrice;
+        public TextBox LblTPPrice => lblTPPrice;
+        public TextBox LblGain => lblGain;
+        public TextBox LblLoss => lblLoss;
+
+
+        // adding an instance of TpSlCalculator class
+        private TpSlCalculator tpSlCalculator;
+
+
+        public TextBox LblOrderEntry => lblOrderEntry;
+        public TextBox LblOrderMaxLoss => lblOrderMaxLoss;
+        public TextBox LblOrderLeverage => lblOrderLeverage;
+        public TextBox LblOrderSLPrice => lblOrderSLPrice;
+
+        public TextBox TxtOrderByValue => txtOrderByValue;
+        public TextBox TxtOrderMargin => txtOrderMargin;
+
+        // Declare instance of OrderByValue
+        private OrderByValue orderByValue; 
+
         public Form1()
         {
             InitializeComponent();
@@ -12,136 +60,147 @@ namespace CryptoCalculator
             firstEntry.Text = String.Empty;
             secondEntry.Text = String.Empty;
 
+            // check for updates
+            CheckForUpdates();
+
             // get version number
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
 
             // display version number
             lblVersion.Text = "v" + version.Major.ToString() + "." + version.Minor.ToString() + "." + version.Build.ToString();
-        }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
+
+            // initialize component classes
+            positions = new Positions(this);
+            tpSlCalculator = new TpSlCalculator(this);
+            orderByValue = new OrderByValue(this);
 
         }
 
         private void calculateBtn_Click_1(object sender, EventArgs e)
         {
-            if (float.TryParse(firstPosition.Text, out float myFirstPosition) &&
-                float.TryParse(secondPosition.Text, out float mySecondPosition) &&
-                float.TryParse(firstEntry.Text, out float myFirstEntry) &&
-                float.TryParse(secondEntry.Text, out float mySecondEntry))
-            {
-                float a = myFirstEntry * myFirstPosition;
-                float b = mySecondEntry * mySecondPosition;
-                float c = myFirstPosition + mySecondPosition;
-
-                float newAveragePrice = (a + b) / c;
-
-                newAverage.Text = newAveragePrice.ToString();
-            }
-            else
-            {
-                MessageBox.Show("Please enter valid numeric values.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            positions.calculateBtn_Click_1(sender, e);
         }
 
         private void btnCalculate_Click(object sender, EventArgs e)
         {
-            try
-            {
-                // Get user input values
-                decimal entryPrice = Convert.ToDecimal(txtEntryPrice.Text);
-                decimal leverage = Convert.ToDecimal(txtLeverage.Text);
-                decimal rrRatio = Convert.ToDecimal(txtRR.Text);
-                decimal amountInvested = Convert.ToDecimal(txtAmountInvested.Text);
-
-                // Read TP% and SL% (nullable if empty)
-                decimal? tpPercentage = string.IsNullOrWhiteSpace(txtTPPercentage.Text) ? (decimal?)null : Convert.ToDecimal(txtTPPercentage.Text);
-                decimal? slPercentage = string.IsNullOrWhiteSpace(txtSLPercentage.Text) ? (decimal?)null : Convert.ToDecimal(txtSLPercentage.Text);
-
-                // Calculate the number of coins bought
-                decimal coinQuantity = amountInvested / entryPrice;
-
-                // If TP% is not given, calculate from RR and SL%
-                if (!tpPercentage.HasValue && slPercentage.HasValue)
-                {
-                    tpPercentage = slPercentage.Value * rrRatio;
-                    txtTPPercentage.Text = tpPercentage.ToString(); // Update label with calculated TP%
-                }
-
-                // If SL% is not given, calculate from RR and TP%
-                if (!slPercentage.HasValue && tpPercentage.HasValue)
-                {
-                    slPercentage = tpPercentage.Value / rrRatio;
-                    txtSLPercentage.Text = slPercentage.ToString(); // Update label with calculated SL%
-                }
-
-                // Stop Loss Calculation
-                decimal stopLossPrice = entryPrice - (entryPrice * (slPercentage.Value / 100));
-                decimal stopLossLoss = (entryPrice - stopLossPrice) * coinQuantity * leverage;
-
-                // Take Profit Calculation (Using TP %)
-                decimal takeProfitPrice = entryPrice + (entryPrice * (tpPercentage.Value / 100));
-                decimal takeProfitGain = (takeProfitPrice - entryPrice) * coinQuantity * leverage;
-
-                // Calculate total position size (effective position size with leverage)
-                decimal effectivePositionSize = coinQuantity * entryPrice * leverage;
-
-                // Update UI Labels with results
-                lblCoinAmount.Text = coinQuantity.ToString();
-                lblPositionSize.Text = effectivePositionSize.ToString();
-                lblSLPrice.Text = stopLossPrice.ToString();
-                lblTPPrice.Text = takeProfitPrice.ToString();
-                lblGain.Text = takeProfitGain.ToString() + " USDT";
-                lblLoss.Text = stopLossLoss.ToString() + " USDT";
-
-                MessageBox.Show(
-                    $"Stop Loss Loss: {stopLossLoss:F2} USDT\n" +
-                    $"Take Profit Gain: {takeProfitGain:F2} USDT",
-                    "Risk-Reward Calculation",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Please enter valid numeric values.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            tpSlCalculator.btnCalculate_Click(sender, e);
         }
 
         private void calculateBtnOrder_Click(object sender, EventArgs e)
         {
+            orderByValue.calculateBtnOrder_Click(sender, e);
+        }
+
+        // check for updates
+        public async void CheckForUpdates()
+        {
+            string versionCheckUrl = "https://api.github.com/repos/Skaikru0518/CryptoCalculator/releases/latest";
+            string currentVersionString = GetCurrentVersion(); // Get current version from Assembly
+
             try
             {
-                // get user inputs
-                decimal entryPrice = Convert.ToDecimal(lblOrderEntry.Text);
-                decimal maxLoss = Convert.ToDecimal(lblOrderMaxLoss.Text);
-                decimal orderLeverage = Convert.ToDecimal(lblOrderLeverage.Text);
-                decimal stopLossPrice = Convert.ToDecimal(lblOrderSLPrice.Text);
+                using (HttpClient client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Add("User-Agent", "CryptoCalculator-Updater");
 
+                    // Step 1: Get latest version from GitHub API
+                    HttpResponseMessage response = await client.GetAsync(versionCheckUrl);
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine($"Failed to check for updates. HTTP Status: {response.StatusCode}");
+                        return;
+                    }
 
-                // calculate per unit loss
-                decimal perUnitLoss = entryPrice - stopLossPrice;
+                    string json = await response.Content.ReadAsStringAsync();
+                    string latestVersion = ExtractVersionFromJson(json);
 
-                // calculate position size
-                decimal positionSize = maxLoss / perUnitLoss; // position size in units (coins)
+                    // Step 2: Compare current version with latest release
+                    if (latestVersion == currentVersionString)
+                    {
+                        btnUpdate.Text = "No Updates";
+                        btnUpdate.Enabled = false; // Disable button
+                        btnUpdate.BackColor = Color.Gray;
+                        pulseTimer?.Stop(); // Stop pulsing effect
+                        return;
+                    }
 
-                // calculate order by value
-                decimal orderValue = Math.Round(positionSize * entryPrice, 2); // order value in USDT
+                    // Step 3: If new update is available, enable the button
+                    btnUpdate.Text = "Update Available";
+                    btnUpdate.Enabled = true;
+                    btnUpdate.ForeColor = Color.White;
+                    btnUpdate.FlatStyle = FlatStyle.Flat;
+                    btnUpdate.BackColor = Color.Red;
 
-                // calculate margin erquired
-                decimal marginRequired = Math.Round(orderValue / orderLeverage, 2); // margin required in USDT
-
-
-                //update UI labels with results
-                txtOrderByValue.Text = orderValue.ToString();
-                txtOrderMargin.Text = marginRequired.ToString();
-
+                    pulseTimer?.Start(); // Start pulsing effect
+                }
             }
-            catch (FormatException)
+            catch (Exception ex)
             {
-                // msg box to show errors
-                MessageBox.Show("Please enter valid numeric values.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Update check failed: " + ex.Message, "Update Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Extracts version number from GitHub API JSON response
+        private string ExtractVersionFromJson(string json)
+        {
+            try
+            {
+                var parsedJson = JObject.Parse(json);
+                return parsedJson["tag_name"]?.ToString() ?? "v1.0.0";
+            }
+            catch
+            {
+                return "v1.0.0"; // Default if parsing fails
+            }
+        }
+
+        // Get the current version of the application
+        private string GetCurrentVersion()
+        {
+            Version version = Assembly.GetExecutingAssembly().GetName().Version ?? new Version(1, 0, 0);
+            return $"v{version.Major}.{version.Minor}.{version.Build}";
+        }
+
+        private async void btnUpdate_Click(object sender, EventArgs e)
+        {
+            string updaterPath = Path.Combine(Application.StartupPath, "Updater.exe");
+
+            if (File.Exists(updaterPath))
+            {
+                Console.WriteLine("Updater already exists. Running it now...");
+                Process.Start(updaterPath);
+                Application.Exit();
+                return;
+            }
+
+            string updateUrl = "https://github.com/Skaikru0518/Updater/releases/latest/download/Updater.exe";
+
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Add("User-Agent", "CryptoCalculator-Updater");
+
+                    HttpResponseMessage response = await client.GetAsync(updateUrl);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine("Downloading Updater...");
+                        byte[] fileBytes = await response.Content.ReadAsByteArrayAsync();
+                        await File.WriteAllBytesAsync(updaterPath, fileBytes);
+
+                        Process.Start(updaterPath);
+                        Application.Exit();
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Download failed. HTTP Status: {response.StatusCode}", "Update Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Update failed: " + ex.Message, "Update Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

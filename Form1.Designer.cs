@@ -89,6 +89,7 @@
             label29 = new Label();
             lblOrderEntry = new TextBox();
             lblVersion = new Label();
+            btnUpdate = new Button();
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
             groupBox1.SuspendLayout();
@@ -310,15 +311,17 @@
             // textBox1
             // 
             textBox1.BackColor = Color.FromArgb(30, 30, 30);
+            textBox1.Enabled = false;
             textBox1.Font = new Font("Fira Code", 8F, FontStyle.Bold);
             textBox1.ForeColor = Color.White;
-            textBox1.Location = new Point(25, 266);
+            textBox1.Location = new Point(25, 242);
             textBox1.Multiline = true;
             textBox1.Name = "textBox1";
             textBox1.ReadOnly = true;
-            textBox1.Size = new Size(119, 89);
+            textBox1.Size = new Size(119, 128);
             textBox1.TabIndex = 36;
-            textBox1.Text = "If TP% or SL% is not given, it will be calculated based on the given RR ratio";
+            textBox1.TabStop = false;
+            textBox1.Text = "Filling in either TP% or SL% is required.\r\nThe other can be calculated from the RR and the filled-in field.";
             // 
             // groupBox3
             // 
@@ -479,7 +482,7 @@
             txtTPPercentage.Location = new Point(255, 129);
             txtTPPercentage.Name = "txtTPPercentage";
             txtTPPercentage.Size = new Size(119, 27);
-            txtTPPercentage.TabIndex = 13;
+            txtTPPercentage.TabIndex = 4;
             // 
             // label12
             // 
@@ -497,7 +500,7 @@
             txtSLPercentage.Location = new Point(499, 129);
             txtSLPercentage.Name = "txtSLPercentage";
             txtSLPercentage.Size = new Size(119, 27);
-            txtSLPercentage.TabIndex = 11;
+            txtSLPercentage.TabIndex = 5;
             // 
             // label11
             // 
@@ -515,7 +518,7 @@
             txtLeverage.Location = new Point(499, 63);
             txtLeverage.Name = "txtLeverage";
             txtLeverage.Size = new Size(119, 27);
-            txtLeverage.TabIndex = 9;
+            txtLeverage.TabIndex = 2;
             // 
             // label10
             // 
@@ -533,7 +536,7 @@
             txtAmountInvested.Location = new Point(255, 63);
             txtAmountInvested.Name = "txtAmountInvested";
             txtAmountInvested.Size = new Size(119, 27);
-            txtAmountInvested.TabIndex = 7;
+            txtAmountInvested.TabIndex = 1;
             // 
             // label9
             // 
@@ -584,10 +587,10 @@
             // 
             tabPage3.BackColor = Color.FromArgb(45, 45, 48);
             tabPage3.Controls.Add(groupBox4);
-            tabPage3.Location = new Point(4, 22);
+            tabPage3.Location = new Point(4, 24);
             tabPage3.Name = "tabPage3";
             tabPage3.Padding = new Padding(3);
-            tabPage3.Size = new Size(701, 414);
+            tabPage3.Size = new Size(701, 412);
             tabPage3.TabIndex = 2;
             tabPage3.Text = "Order by Value";
             // 
@@ -762,6 +765,17 @@
             lblVersion.TabIndex = 1;
             lblVersion.Text = "v 1.0.0";
             // 
+            // btnUpdate
+            // 
+            btnUpdate.ForeColor = Color.Black;
+            btnUpdate.Location = new Point(551, 6);
+            btnUpdate.Name = "btnUpdate";
+            btnUpdate.Size = new Size(105, 23);
+            btnUpdate.TabIndex = 17;
+            btnUpdate.Text = "button1";
+            btnUpdate.UseVisualStyleBackColor = true;
+            btnUpdate.Click += btnUpdate_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 13F);
@@ -769,6 +783,7 @@
             AutoSize = true;
             BackColor = Color.FromArgb(45, 45, 48);
             ClientSize = new Size(733, 464);
+            Controls.Add(btnUpdate);
             Controls.Add(lblVersion);
             Controls.Add(tabControl1);
             Font = new Font("Fira Code", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -860,5 +875,6 @@
         private Label label18;
         private TextBox txtOrderByValue;
         private Label lblVersion;
+        private Button btnUpdate;
     }
 }
