@@ -165,17 +165,13 @@ namespace CryptoCalculator
 
         private async void btnUpdate_Click(object sender, EventArgs e)
         {
-            string updaterPath = Path.Combine(Application.StartupPath, "Updater.exe");
+            // Create a Temp folder for the update process
+            string tempFolder = Path.Combine(Application.StartupPath, "Temp");
+            Directory.CreateDirectory(tempFolder);
 
-            if (File.Exists(updaterPath))
-            {
-                Console.WriteLine("Updater already exists. Running it now...");
-                Process.Start(updaterPath);
-                Application.Exit();
-                return;
-            }
-
-            string updateUrl = "https://github.com/Skaikru0518/Updater/releases/latest/download/Updater.exe";
+            string newExePath = Path.Combine(tempFolder, "CryptoCalculator.exe");
+            string oldExePath = Application.ExecutablePath; // The running CryptoCalculator.exe
+            string updateUrl = "https://github.com/Skaikru0518/CryptoCalculator/releases/latest/download/CryptoCalculator.exe";
 
             try
             {
@@ -183,27 +179,64 @@ namespace CryptoCalculator
                 {
                     client.DefaultRequestHeaders.Add("User-Agent", "CryptoCalculator-Updater");
 
+                    // Download the latest CryptoCalculator.exe
                     HttpResponseMessage response = await client.GetAsync(updateUrl);
                     if (response.IsSuccessStatusCode)
                     {
-                        Console.WriteLine("Downloading Updater...");
+                        Console.WriteLine("Downloading latest CryptoCalculator.exe...");
                         byte[] fileBytes = await response.Content.ReadAsByteArrayAsync();
-                        await File.WriteAllBytesAsync(updaterPath, fileBytes);
-
-                        Process.Start(updaterPath);
-                        Application.Exit();
+                        await File.WriteAllBytesAsync(newExePath, fileBytes);
                     }
                     else
                     {
                         MessageBox.Show($"Download failed. HTTP Status: {response.StatusCode}", "Update Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
                     }
                 }
+
+                // Create the update batch script
+                string batchScriptPath = Path.Combine(tempFolder, "update_script.bat");
+                File.WriteAllText(batchScriptPath, $@"
+@echo off
+title Updating CryptoCalculator...
+echo Closing CryptoCalculator.exe...
+taskkill /F /IM CryptoCalculator.exe >nul 2>&1
+
+:: Wait 2 seconds to ensure it's closed
+timeout /t 2 /nobreak >nul
+
+echo Replacing old CryptoCalculator.exe...
+del /f /q ""{oldExePath}""
+move /y ""{newExePath}"" ""{oldExePath}""
+
+:: Delete Temp folder
+rd /s /q ""{tempFolder}""
+
+:: Restart CryptoCalculator
+echo Launching the updated CryptoCalculator...
+start """" ""{oldExePath}""
+
+:: Delete this batch file
+del /f /q ""%~f0""
+exit
+");
+
+                // Run the batch script and close CryptoCalculator
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = batchScriptPath,
+                    CreateNoWindow = true,
+                    UseShellExecute = false
+                });
+
+                Application.Exit(); // Close CryptoCalculator before update
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Update failed: " + ex.Message, "Update Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
 
     }
 }
